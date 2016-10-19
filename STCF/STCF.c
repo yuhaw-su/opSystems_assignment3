@@ -8,6 +8,8 @@ struct Job
 {
   unsigned int arrivalTime;
   unsigned int duration;
+  int done;
+  int started;
 };
 
 void swap(struct Job* jobs[], int index1, int index2)
@@ -32,6 +34,32 @@ void sortJobs(struct Job* jobs[], int jobsLength)
   }
 }
 
+int getNextJobIndex(struct Job* jobs[], unsigned int currentTime, int jobsLength)
+{
+  int i;
+  int minDurationIndex = -1;
+  unsigned int updatedTime = currentTime;
+  for (i = 0; i < jobsLength; ++i)
+  {
+    if (jobs[i]->done != 1)
+    {
+      if (jobs[i]->arrivalTime > updatedTime)
+      {
+        if (minDurationIndex == -1)
+          updatedTime = jobs[i]->arrivalTime;
+        else
+          break;
+      }
+      if (minDurationIndex == -1 || (jobs[i]->arrivalTime <= updatedTime && jobs[i]->duration < jobs[minDurationIndex]->duration))
+      {
+        minDurationIndex = i;
+      }
+    }
+  }
+
+  return minDurationIndex;
+}
+
 int main(int argc, char *argv[])
 {
   if (argc != 2)
@@ -50,10 +78,10 @@ int main(int argc, char *argv[])
 
   struct Job* jobs[MAX_JOB_COUNT];
   char line[11];
-  unsigned int arrivalTime;
-  unsigned int duration;
-  int jobsLength = 0;
+  unsigned int arrivalTime, duration;
+  int jobsLength, i;
   fgets(line, 11, input);
+  sscanf(line, "%d", &jobsLength);
   while (!feof(input))
   {
     fgets(line, 11, input);
@@ -65,9 +93,10 @@ int main(int argc, char *argv[])
       struct Job* job = (struct Job*) malloc(sizeof(struct Job*));
       job->arrivalTime = arrivalTime;
       job->duration = duration;
-      jobs[jobsLength] = job;
-      printf("Job with arrival %u and duration %u added\n", jobs[jobsLength]->arrivalTime, jobs[jobsLength]->duration);
-      jobsLength++;
+      job->done = 0;
+      job->started = 0;
+      jobs[i] = job;
+      i++;
     }
   }
 
@@ -75,24 +104,35 @@ int main(int argc, char *argv[])
 
   if (jobsLength == 0)
   {
-    printf("No jobs detected from file\n");
     exit(EXIT_FAILURE);
   }
 
   sortJobs(jobs, jobsLength);
 
-  int i;
-  unsigned int t = jobs[0]->arrivalTime;
+  int jobIndex;
+  unsigned int t = 0;
   double turnaround = 0, response = 0;
-  for (i = 0; i < jobsLength; ++i)
+  i = 0;
+  while (i < jobsLength)
   {
-    if (jobs[i]->arrivalTime > t)
+    jobIndex = getNextJobIndex(jobs, t, jobsLength);
+    if (jobs[jobIndex]->started != 1)
     {
-      t = jobs[i]->arrivalTime;
+      jobs[jobIndex]->started = 1;
+      if (jobs[jobIndex]->arrivalTime > t)
+      {
+        t = jobs[jobIndex]->arrivalTime;
+      }
+      response += t - jobs[jobIndex]->arrivalTime;
     }
-    response += t - jobs[i]->arrivalTime;
-    t += jobs[i]->duration;
-    turnaround += t - jobs[i]->arrivalTime;
+    t++;
+    jobs[jobIndex]->duration--;
+    if (jobs[jobIndex]->duration == 0)
+    {
+      jobs[jobIndex]->done = 1;
+      turnaround += t - jobs[jobIndex]->arrivalTime;
+      i++;
+    }
   }
 
   FILE *output;

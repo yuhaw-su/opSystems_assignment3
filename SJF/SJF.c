@@ -77,10 +77,10 @@ int main(int argc, char *argv[])
 
   struct Job* jobs[MAX_JOB_COUNT];
   char line[11];
-  unsigned int arrivalTime;
-  unsigned int duration;
-  int jobsLength = 0;
+  unsigned int arrivalTime, duration;
+  int jobsLength, i;
   fgets(line, 11, input);
+  sscanf(line, "%d", &jobsLength);
   while (!feof(input))
   {
     fgets(line, 11, input);
@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
       job->arrivalTime = arrivalTime;
       job->duration = duration;
       job->done = 0;
-      jobs[jobsLength] = job;
-      jobsLength++;
+      jobs[i] = job;
+      i++;
     }
   }
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 
   sortJobs(jobs, jobsLength);
 
-  int i, jobIndex;
+  int jobIndex;
   unsigned int t = 0;
   double turnaround = 0, response = 0;
   for (i = 0; i < jobsLength; ++i)
