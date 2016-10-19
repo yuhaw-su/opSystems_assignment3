@@ -73,7 +73,6 @@ int main(int argc, char *argv[])
 
   fclose(input);
 
-  printf("%d jobs added\n", jobsLength);
   if (jobsLength == 0)
   {
     printf("No jobs detected from file\n");
@@ -87,13 +86,27 @@ int main(int argc, char *argv[])
   double turnaround = 0, response = 0;
   for (i = 0; i < jobsLength; ++i)
   {
+    if (jobs[i]->arrivalTime > t)
+    {
+      t = jobs[i]->arrivalTime;
+    }
     response += t - jobs[i]->arrivalTime;
     t += jobs[i]->duration;
-    turaround += t - jobs[i]->arrivalTime;
+    turnaround += t - jobs[i]->arrivalTime;
   }
 
   FILE *output;
-  output = fopen("FCFS-out.txt","w");
+  output = fopen("FCFS_out.txt","w");
+  if (output == NULL)
+  {
+    printf("Error: unable to open file to write\n");
+    exit(EXIT_FAILURE);
+  }
+
+  fprintf(output, "%.5lf\n", turnaround/jobsLength);
+  fprintf(output, "%.5lf\n", response/jobsLength);
+
+  fclose(output);
 
   return 0;
 }
