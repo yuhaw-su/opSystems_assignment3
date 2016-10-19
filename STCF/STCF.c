@@ -27,7 +27,9 @@ void sortJobs(struct Job* jobs[], int jobsLength)
     for (j = i+1; j < jobsLength; ++j)
     {
       if (jobs[i]->arrivalTime > jobs[j]->arrivalTime)
+      {
         swap(jobs, i, j);
+      }
     }
   }
 }
@@ -44,12 +46,18 @@ int getNextJobIndex(struct Job* jobs[], unsigned int currentTime, int jobsLength
       if (jobs[i]->arrivalTime > updatedTime)
       {
         if (minDurationIndex == -1)
+        {
           updatedTime = jobs[i]->arrivalTime;
+        }
         else
+        {
           break;
+        }
       }
       if (minDurationIndex == -1 || (jobs[i]->arrivalTime <= updatedTime && jobs[i]->duration < jobs[minDurationIndex]->duration))
+      {
         minDurationIndex = i;
+      }
     }
   }
 
