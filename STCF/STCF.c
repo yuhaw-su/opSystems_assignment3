@@ -27,9 +27,7 @@ void sortJobs(struct Job* jobs[], int jobsLength)
     for (j = i+1; j < jobsLength; ++j)
     {
       if (jobs[i]->arrivalTime > jobs[j]->arrivalTime)
-      {
         swap(jobs, i, j);
-      }
     }
   }
 }
@@ -51,9 +49,7 @@ int getNextJobIndex(struct Job* jobs[], unsigned int currentTime, int jobsLength
           break;
       }
       if (minDurationIndex == -1 || (jobs[i]->arrivalTime <= updatedTime && jobs[i]->duration < jobs[minDurationIndex]->duration))
-      {
         minDurationIndex = i;
-      }
     }
   }
 
@@ -109,11 +105,10 @@ int main(int argc, char *argv[])
 
   sortJobs(jobs, jobsLength);
 
-  int jobIndex;
+  int jobIndex, jobsCompleted = 0;
   unsigned int t = 0;
   double turnaround = 0, response = 0;
-  i = 0;
-  while (i < jobsLength)
+  while (jobsCompleted < jobsLength)
   {
     jobIndex = getNextJobIndex(jobs, t, jobsLength);
     if (jobs[jobIndex]->started != 1)
@@ -131,7 +126,7 @@ int main(int argc, char *argv[])
     {
       jobs[jobIndex]->done = 1;
       turnaround += t - jobs[jobIndex]->arrivalTime;
-      i++;
+      jobsCompleted++;
     }
   }
 

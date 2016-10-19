@@ -26,9 +26,7 @@ void sortJobs(struct Job* jobs[], int jobsLength)
     for (j = i+1; j < jobsLength; ++j)
     {
       if (jobs[i]->arrivalTime > jobs[j]->arrivalTime)
-      {
         swap(jobs, i, j);
-      }
     }
   }
 }
