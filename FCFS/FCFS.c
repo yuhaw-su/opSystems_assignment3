@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
   sortJobs(jobs, jobsLength);
 
   int i;
-  unsigned int t = jobs[0]->arrivalTime;
+  unsigned int t = 0;
   double turnaround = 0, response = 0;
   for (i = 0; i < jobsLength; ++i)
   {
