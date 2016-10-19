@@ -71,12 +71,29 @@ int main(int argc, char *argv[])
     }
   }
 
+  fclose(input);
+
   printf("%d jobs added\n", jobsLength);
+  if (jobsLength == 0)
+  {
+    printf("No jobs detected from file\n");
+    exit(EXIT_FAILURE);
+  }
+
   sortJobs(jobs, jobsLength);
 
-  
+  int i;
+  unsigned int t = jobs[0]->arrivalTime;
+  double turnaround = 0, response = 0;
+  for (i = 0; i < jobsLength; ++i)
+  {
+    response += t - jobs[i]->arrivalTime;
+    t += jobs[i]->duration;
+    turaround += t - jobs[i]->arrivalTime;
+  }
 
-  fclose(input);
+  FILE *output;
+  output = fopen("FCFS-out.txt","w");
 
   return 0;
 }
