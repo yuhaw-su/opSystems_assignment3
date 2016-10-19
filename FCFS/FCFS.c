@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
 
   struct Job* jobs[MAX_JOB_COUNT];
   char line[11];
-  int i = 0;
   unsigned int arrivalTime;
   unsigned int duration;
   int jobsLength = 0;
@@ -66,22 +65,16 @@ int main(int argc, char *argv[])
       struct Job* job = (struct Job*) malloc(sizeof(struct Job*));
       job->arrivalTime = arrivalTime;
       job->duration = duration;
-      jobs[i] = job;
-      printf("Arrival: %u", job->arrivalTime);
-      printf("Duration: %u", job->arrivalTime);
+      jobs[jobsLength] = job;
+      printf("Job with arrival %u and duration %u added\n", jobs[jobsLength]->arrivalTime, jobs[jobsLength]->duration);
       jobsLength++;
     }
   }
 
-  printf("jobsLength = %d\n", jobsLength);
+  printf("%d jobs added\n", jobsLength);
   sortJobs(jobs, jobsLength);
 
-  // START FCFS-pertinent stuff
-
-  for (i = 0; i < jobsLength; ++i)
-  {
-    printf("Arrival time for job %d: %u\n", i, jobs[i]->arrivalTime);
-  }
+  
 
   fclose(input);
 
