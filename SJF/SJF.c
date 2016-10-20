@@ -85,6 +85,12 @@ int main(int argc, char *argv[])
   int jobsLength, i;
   fgets(line, 11, input);
   sscanf(line, "%d", &jobsLength);
+  if (jobsLength == 0)
+  {
+    printf("0.00000\n0.00000\n");
+    return 0;
+  }
+
   while (!feof(input))
   {
     fgets(line, 11, input);
@@ -101,13 +107,7 @@ int main(int argc, char *argv[])
       i++;
     }
   }
-
   fclose(input);
-
-  if (jobsLength == 0)
-  {
-    exit(EXIT_FAILURE);
-  }
 
   sortJobs(jobs, jobsLength);
 
@@ -127,18 +127,8 @@ int main(int argc, char *argv[])
     jobs[jobIndex]->done = 1;
   }
 
-  FILE *output;
-  output = fopen("SJF_out.txt","w");
-  if (output == NULL)
-  {
-    printf("Error: unable to open file to write\n");
-    exit(EXIT_FAILURE);
-  }
-
-  fprintf(output, "%.5lf\n", turnaround/jobsLength);
-  fprintf(output, "%.5lf\n", response/jobsLength);
-
-  fclose(output);
+  printf("%.5lf\n", turnaround/jobsLength);
+  printf("%.5lf\n", response/jobsLength);
 
   return 0;
 }
