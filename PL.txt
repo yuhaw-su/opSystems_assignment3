@@ -1,0 +1,16 @@
+C compiled with gcc-linked clang-800.0.38 (Mac)
+To compile, navigate to the inner directories within the terminal and run:
+
+    gcc <scheduling-method>.c -o <scheduling-method>
+
+For example, to compile FCFS, navigate to the FCFS directory (cd FCFS), then:
+
+    gcc FCFS.c -o FCFS
+
+To run the generated binary, then run:
+
+    ./<scheduling-method> <input-file>
+
+For example, to run the FCFS binary with an input file input1 (also in the FCFS directory), enter:
+
+    ./FCFS input1

@@ -1,0 +1,8 @@
+Yuhaw Su
+    reading jobs from input
+    FCFS implementation
+    SJF enhancement from FCFS
+
+Samuel Glenn
+    sorting of jobs by response time
+    STCF enhancement from SJF
