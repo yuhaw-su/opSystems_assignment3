@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX_JOB_COUNT 100
 
@@ -21,14 +22,13 @@ void swap(struct Job* jobs[], int index1, int index2)
 void sortJobs(struct Job* jobs[], int jobsLength)
 {
   int i, j;
-  for (i = 0; i < jobsLength-1; ++i)
+  for (i = 1; i < jobsLength; ++i)
   {
-    for (j = i+1; j < jobsLength; ++j)
+    j = i;
+    while (j > 0 && jobs[j-1]->arrivalTime > jobs[j]->arrivalTime)
     {
-      if (jobs[i]->arrivalTime > jobs[j]->arrivalTime)
-      {
-        swap(jobs, i, j);
-      }
+      swap(jobs, j, j-1);
+      j--;
     }
   }
 }
@@ -63,6 +63,24 @@ int getNextJobIndex(struct Job* jobs[], unsigned int currentTime, int jobsLength
   return minDurationIndex;
 }
 
+void getNextUnsignedInt(FILE *fp, char *line)
+{
+  char c = fgetc(fp);
+  while (isspace(c) != 0)
+  {
+    c = fgetc(fp);
+  }
+
+  int i = 0;
+  while (isspace(c) == 0)
+  {
+    line[i] = c;
+    i++;
+    c = fgetc(fp);
+  }
+  line[i] = '\n';
+}
+
 int main(int argc, char *argv[])
 {
   if (argc != 2)
@@ -80,10 +98,11 @@ int main(int argc, char *argv[])
   }
 
   struct Job* jobs[MAX_JOB_COUNT];
-  char line[11];
+  char line[4];
   unsigned int arrivalTime, duration;
-  int jobsLength, i;
-  fgets(line, 11, input);
+  int jobsLength;
+  int i = 0, arrivalTimeRead = 0;
+  getNextUnsignedInt(input, line);
   sscanf(line, "%d", &jobsLength);
   if (jobsLength == 0)
   {
@@ -91,21 +110,17 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  while (!feof(input))
+  while (i < jobsLength)
   {
-    fgets(line, 11, input);
-    if (line[0] != '\n')
-    {
-      sscanf(line, "%u", &arrivalTime);
-      fgets(line, 11, input);
-      sscanf(line, "%u", &duration);
-      struct Job* job = (struct Job*) malloc(sizeof(struct Job*));
-      job->arrivalTime = arrivalTime;
-      job->duration = duration;
-      job->done = 0;
-      jobs[i] = job;
-      i++;
-    }
+    getNextUnsignedInt(input, line);
+    sscanf(line, "%u", &arrivalTime);
+    getNextUnsignedInt(input, line);
+    sscanf(line, "%u", &duration);
+    struct Job* job = (struct Job*) malloc(sizeof(struct Job*));
+    job->arrivalTime = arrivalTime;
+    job->duration = duration;
+    jobs[i] = job;
+    i++;
   }
   fclose(input);
 
