@@ -76,7 +76,7 @@ void getNextUnsignedInt(FILE *fp, char *line)
   {
     line[i] = c;
     i++;
-    c = fgetc(fp);
+    if ((c = fgetc(fp)) == EOF) break;
   }
   line[i] = '\n';
 }
